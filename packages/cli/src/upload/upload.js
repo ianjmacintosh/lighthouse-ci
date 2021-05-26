@@ -134,6 +134,11 @@ function buildCommand(yargs) {
       description:
         "The URL of the GitHub app where PR status checks are POST'd. Defaults to the publicly hosted app. Most users will not need to change this.",
     },
+    githubStatusDescription: {
+      type: 'string',
+      description:
+        'Your own function to generate the string Lighthouse CI will send to GitHub for its status check',
+    },
   });
 }
 
@@ -225,7 +230,13 @@ function getGitHubContext(urlLabel, options) {
  * @return {Promise<void>}
  */
 async function runGithubStatusCheck(options, targetUrlMap) {
-  const {githubToken, githubAppToken, githubApiHost, githubAppUrl} = options;
+  const {
+    githubToken,
+    githubAppToken,
+    githubApiHost,
+    githubAppUrl,
+    githubStatusDescription,
+  } = options;
   const hash = getCurrentHash();
   const slug = getGitHubRepoSlug(githubApiHost);
 
@@ -243,7 +254,30 @@ async function runGithubStatusCheck(options, targetUrlMap) {
     (a, b) => a[0].url.length - b[0].url.length
   );
 
-  if (groupedResults.length) {
+  if (githubStatusDescription) {
+    for (const group of groupedResults) {
+      const rawUrl = group[0].url;
+      const urlLabel = getUrlLabelForGithub(rawUrl, options);
+      const failedResults = group.filter(result => result.level === 'error' && !result.passed);
+      const state = failedResults.length ? 'failure' : 'success';
+      const context = getGitHubContext(urlLabel, options);
+      const description = githubStatusDescription;
+      const targetUrl = targetUrlMap.get(rawUrl) || rawUrl;
+
+      await postStatusToGitHub({
+        slug,
+        hash,
+        state,
+        context,
+        description,
+        targetUrl,
+        githubToken,
+        githubAppToken,
+        githubApiHost,
+        githubAppUrl,
+      });
+    }
+  } else if (groupedResults.length) {
     for (const group of groupedResults) {
       const rawUrl = group[0].url;
       const urlLabel = getUrlLabelForGithub(rawUrl, options);

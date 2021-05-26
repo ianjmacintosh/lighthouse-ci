@@ -73,6 +73,11 @@ The API is a standard node express server. Code for the API lives in `packages/s
 
 The UI is written in [preact](https://preactjs.com/) and bundled with [parcel](https://parceljs.org/). Code for the UI lives in `packages/server/src/ui/`. This is the only part of Lighthouse CI that requires a build step in order to use.
 
+```bash
+cd ./packages/server/src/ui # Run this from the repo root
+yarn build
+```
+
 The cron jobs are periodic tasks that run while the server is alive. Code for the cron jobs lives in `packages/server/src/cron/`.
 
 ## Tests
@@ -101,3 +106,16 @@ mysql -e ALTER USER 'lhci'@'localhost' IDENTIFIED BY 'password';' -u root
 export MYSQL_DB_URL="mysql://lhci:password@localhost/lighthouse_ci_test"
 yarn test
 ```
+
+### Help! I haven't changed anything and my tests are already failing!
+
+Make sure you've built the viewer
+
+```bash
+cd ./packages/viewer # Run this from the repo root
+yarn build
+```
+
+### My tests are failing due to snapshot changes. When should I update this project's snapshots?
+
+I'm not sure honestly.
