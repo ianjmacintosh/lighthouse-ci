@@ -28,6 +28,7 @@ declare global {
         githubAppToken?: string;
         githubAppUrl?: string;
         githubStatusContextSuffix?: string;
+        githubStatusDescription?: string;
         urlReplacementPatterns: string[];
       }
 

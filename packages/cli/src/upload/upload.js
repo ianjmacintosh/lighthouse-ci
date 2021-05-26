@@ -134,6 +134,11 @@ function buildCommand(yargs) {
       description:
         "The URL of the GitHub app where PR status checks are POST'd. Defaults to the publicly hosted app. Most users will not need to change this.",
     },
+    githubStatusDescription: {
+      type: 'string',
+      description:
+        'Your own function to generate the string Lighthouse CI will send to GitHub for its status check',
+    },
   });
 }
 
