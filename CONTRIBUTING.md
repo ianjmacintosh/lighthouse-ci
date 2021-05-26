@@ -101,3 +101,16 @@ mysql -e ALTER USER 'lhci'@'localhost' IDENTIFIED BY 'password';' -u root
 export MYSQL_DB_URL="mysql://lhci:password@localhost/lighthouse_ci_test"
 yarn test
 ```
+
+### Help! I haven't changed anything and my tests are already failing!
+
+Make sure you've built the viewer
+
+```bash
+cd ./packages/viewer # Run this from the repo root
+yarn build
+```
+
+### My tests are failing due to snapshot changes. When should I update this project's snapshots?
+
+I'm not sure honestly.
